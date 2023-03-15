@@ -1,0 +1,58 @@
+global:
+  resolve_timeout: 5m
+inhibit_rules:
+  - equal:
+      - namespace
+      - alertname
+    source_matchers:
+      - severity = critical
+    target_matchers:
+      - severity =~ warning|info
+  - equal:
+      - namespace
+      - alertname
+    source_matchers:
+      - severity = warning
+    target_matchers:
+      - severity = info
+  - equal:
+      - namespace
+    source_matchers:
+      - alertname = InfoInhibitor
+    target_matchers:
+      - severity = info
+receivers:
+  - name: 'telegram'
+    telegram_configs:
+    - api_url: https://api.telegram.org
+      bot_token: "BOT_TOKEN"
+      chat_id: -CHAT_ID
+      parse_mode: ''
+  - name: 'webhook'
+    webhook_configs:
+    - send_resolved: true
+      url: 'http://telegram.namespace:9119/alert?channel=CHANNEL_ID'
+      http_config:
+        basic_auth:
+          username: WEBHOOK_LOGIN
+          password: WEBHOOK_PASSWORD
+  - name: monitoring-ping
+    webhook_configs:
+    - url: 'http://telegram.namespace:9119/alert?channel=CHANNEL_ID'
+      http_config:
+        basic_auth:
+          username: WEBHOOK_LOGIN
+          password: WEBHOOK_PASSWORD
+route:
+  group_by:
+    - alertname
+  group_interval: 5m
+  group_wait: 30s
+  receiver: webhook
+  repeat_interval: 12h
+  routes:
+    - match:
+        alertname: Watchdog
+      repeat_interval: 5m
+      receiver: monitoring-ping
+

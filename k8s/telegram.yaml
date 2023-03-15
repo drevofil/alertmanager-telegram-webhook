@@ -1,0 +1,45 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: telegram
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment: telegram
+  template:
+    metadata:
+      labels:
+        deployment: telegram
+    spec:
+      containers:
+        - name: telegram
+          image: 'brrra/telegram:1.8.1-ubi9'
+          ports:
+            - containerPort: 9119
+              protocol: TCP
+          env:
+            - name: bot_token
+              value: 'FILLME'
+            - name: chatid
+              value: 'FILLME'
+            - name: username
+              value: FILLME
+            - name: password
+              value: FILLME
+            - name: appkey
+              value: FILLME
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: telegram
+spec:
+  ports:
+    - name: service
+      protocol: TCP
+      port: 9119
+      targetPort: 9119
+  selector:
+    deployment: telegram

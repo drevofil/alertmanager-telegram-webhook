@@ -1,0 +1,17 @@
+FROM registry.access.redhat.com/ubi9/python-39
+
+LABEL maintainer "Artem Baidin <ufo3939@gmail.com>"
+
+WORKDIR /app
+
+USER 0
+ADD app .
+RUN chown -R 1001:0 /app && \
+    chmod +x /app/run.sh
+USER 1001
+
+RUN pip install -r /app/requirements.txt 
+
+EXPOSE 9119
+
+ENTRYPOINT ["/app/run.sh"]

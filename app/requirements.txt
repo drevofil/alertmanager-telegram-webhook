@@ -1,0 +1,5 @@
+flask
+Flask-BasicAuth
+gunicorn
+python-dateutil
+requests
