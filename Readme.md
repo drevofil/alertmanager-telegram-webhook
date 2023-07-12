@@ -25,6 +25,7 @@ docker build -f Dockerfile.bullseye . -t brrra/telegram:1.7-bullseye
 3. `password`- пароль базовой авторизации для отправки алертов 
 4. `chatid` - чат (канал, группа), в который отправляются уведомления
 5. `bot_token`- токен бота
+6. `show_labels` - default - `true`, опциональная переменная для отключения отправки label алертов в сообщение
 
 ```shell
 podman run \
@@ -34,6 +35,7 @@ podman run \
 -e password=3312321 \
 -e chatid=1312321 \
 -e bot_token=1123123 \
+-e show_labels=false \
 --name alertmanager-telegram-webhook \
 brrra/telegram:1.7 
 ```
@@ -48,6 +50,7 @@ docker run \
 -e password=3312321 \
 -e chatid=1312321 \
 -e bot_token=1123123 \
+-e show_labels=false \
 --name alertmanager-telegram-webhook \
 brrra/telegram:1.7 
 ```
