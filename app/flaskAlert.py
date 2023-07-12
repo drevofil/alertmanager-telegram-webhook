@@ -13,6 +13,7 @@ chatid = os.environ['chatid']
 username =  os.environ['username']
 password =  os.environ['password']
 botToken =  os.environ['bot_token']
+show_labels = os.environ.get('show_labels', 'true')
 group_chat_id = "-"+chatid
 
 app = Flask(__name__)
@@ -39,21 +40,22 @@ def postAlertmanager():
         elif alert['status'] == "firing":
             message = "\U0000274c Firing"+"\n"+"\n"
         if 'alertname' in alert['labels']:
-            message += "Alert name: "+alert['labels']['alertname']+"\n"+"\n"
+            message += "Alert name: "+alert['labels']['alertname']+"\n"
         #
-        if 'labels' in alert:
-            labels = alert['labels']
-            message += "Labels:"+"\n"
-            for key, value in labels.items():
-                message += "- "+ key +" : " + value +"\n"
-        else :
-            message += "\n"+"No Labels"+"\n"
+        if show_labels.lower() == 'true':
+            if 'labels' in alert:
+                labels = alert['labels']
+                message += "\n"+"Labels:"+"\n"
+                for key, value in labels.items():
+                    message += "- "+ key +" : " + value +"\n"
+            else :
+                message += "\n"+"No Labels"+"\n"
         #
         if 'annotations' in alert:
             annotations = alert['annotations']
-            message += "\n"+"Annotations:"+"\n"
+            # message += "\n"+"Annotations:"+"\n"
             for key, value in annotations.items():
-                message += "- "+ key +" : " + value +"\n"
+                message += key.capitalize() +": " + value +"\n"
         else:
             message += "\n"+"No annotations"+"\n"
         if alert['status'] == "resolved":
